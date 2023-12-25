@@ -29,6 +29,7 @@ import (
 	"github.com/Fantom-foundation/go-opera/gossip/gasprice"
 	"github.com/Fantom-foundation/go-opera/integration"
 	"github.com/Fantom-foundation/go-opera/integration/makefakegenesis"
+	"github.com/Fantom-foundation/go-opera/integration/makegenesis/testnet"
 	"github.com/Fantom-foundation/go-opera/opera/genesis"
 	"github.com/Fantom-foundation/go-opera/opera/genesisstore"
 	futils "github.com/Fantom-foundation/go-opera/utils"
@@ -72,6 +73,11 @@ var (
 		Name:  "cache",
 		Usage: "Megabytes of memory allocated to internal caching",
 		Value: DefaultCacheSize,
+	}
+	// TestNetFlag enables testnet genesis configuration
+	TestNetFlag = cli.BoolFlag{
+		Name:  "testnet",
+		Usage: "Run testnet.",
 	}
 	// GenesisFlag specifies network genesis configuration
 	GenesisFlag = cli.StringFlag{
@@ -206,6 +212,8 @@ func loadAllConfigs(file string, cfg *config) error {
 
 func mayGetGenesisStore(ctx *cli.Context) *genesisstore.Store {
 	switch {
+	case ctx.GlobalIsSet(TestNetFlag.Name):
+		return testnet.TestNetGenesisStore()
 	case ctx.GlobalIsSet(FakeNetFlag.Name):
 		_, num, err := parseFakeGen(ctx.GlobalString(FakeNetFlag.Name))
 		if err != nil {

@@ -20,12 +20,10 @@ on how you can run your own `opera` instance.
 
 ### Launching a network
 
-You will need a genesis file to join a network, which may be found in https://github.com/Fantom-foundation/lachesis_launch
-
 Launching `opera` readonly (non-validator) node for network specified by the genesis file:
 
 ```shell
-$ opera --genesis file.g
+$ opera --testnet
 ```
 
 ### Configuration
@@ -73,50 +71,15 @@ $ opera --nat extip:1.2.3.4
 The network is specified only by its genesis file, so running a testnet node is equivalent to
 using a testnet genesis file instead of a mainnet genesis file:
 ```shell
-$ opera --genesis /path/to/testnet.g # launch node
+$ opera --testnet # launch node
 ```
 
 It may be convenient to use a separate datadir for your testnet node to avoid collisions with other networks:
 ```shell
-$ opera --genesis /path/to/testnet.g --datadir /path/to/datadir # launch node
+$ opera --testnet --datadir /path/to/datadir # launch node
 $ opera --datadir /path/to/datadir account new # create new account
 $ opera --datadir /path/to/datadir attach # attach to IPC
 ```
-
-### Testing
-
-Lachesis has extensive unit-testing. Use the Go tool to run tests:
-```shell
-go test ./...
-```
-
-If everything goes well, it should output something along these lines:
-```
-ok  	github.com/Fantom-foundation/go-opera/app	0.033s
-?   	github.com/Fantom-foundation/go-opera/cmd/cmdtest	[no test files]
-ok  	github.com/Fantom-foundation/go-opera/cmd/opera	13.890s
-?   	github.com/Fantom-foundation/go-opera/cmd/opera/metrics	[no test files]
-?   	github.com/Fantom-foundation/go-opera/cmd/opera/tracing	[no test files]
-?   	github.com/Fantom-foundation/go-opera/crypto	[no test files]
-?   	github.com/Fantom-foundation/go-opera/debug	[no test files]
-?   	github.com/Fantom-foundation/go-opera/ethapi	[no test files]
-?   	github.com/Fantom-foundation/go-opera/eventcheck	[no test files]
-?   	github.com/Fantom-foundation/go-opera/eventcheck/basiccheck	[no test files]
-?   	github.com/Fantom-foundation/go-opera/eventcheck/gaspowercheck	[no test files]
-?   	github.com/Fantom-foundation/go-opera/eventcheck/heavycheck	[no test files]
-?   	github.com/Fantom-foundation/go-opera/eventcheck/parentscheck	[no test files]
-ok  	github.com/Fantom-foundation/go-opera/evmcore	6.322s
-?   	github.com/Fantom-foundation/go-opera/gossip	[no test files]
-?   	github.com/Fantom-foundation/go-opera/gossip/emitter	[no test files]
-ok  	github.com/Fantom-foundation/go-opera/gossip/filters	1.250s
-?   	github.com/Fantom-foundation/go-opera/gossip/gasprice	[no test files]
-?   	github.com/Fantom-foundation/go-opera/gossip/occuredtxs	[no test files]
-?   	github.com/Fantom-foundation/go-opera/gossip/piecefunc	[no test files]
-ok  	github.com/Fantom-foundation/go-opera/integration	21.640s
-```
-
-Also it is tested with [fuzzing](./FUZZING.md).
-
 
 ### Operating a private network (fakenet)
 
