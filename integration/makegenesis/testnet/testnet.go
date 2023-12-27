@@ -30,17 +30,17 @@ import (
 )
 
 var testnetValidators = []string{
-	"04d777c8d49311557c08b9aea240a294b9e6d08f820cf57ef69a39d5ff22f4ab8c2a387b542fe68308c120838e6b208aac56fe2ee074544583dd981c6e8c8cf06d",
-	"04ffc2c399d74fb3b711a72390739483b2a447005638c7b259706459b74cc7919ada0eb85199bfea74b0425e9d1d62d7d621fde5753fbad15d69f9b6f873bc5cac",
-	"04dcea9cde99c57c3b89fd6f519c29e9f9a66c5cde95738cbc8b5ca099f39b2d52262386099b46436231f8c32ebed94f409dee9af14e0f57c203b807f820a0d6d5",
+	"04cbcc8aa3c7314d5cc58cc44d4160658479c9b73764880b949bbc1d156eb95b0b3ddf23d326bed2982a844c6fbd563cc27f6009fe96e0637f184260b51e0f5d7c",
+	"04ed0273361cec3adbeb45b89f645c9c0fd2e4230fcb285a33d289816d12dbf8b6472587d290dc9598206d6a6a1f7f8f25b7c516f4e563dd3867571dc8a57bb7ff",
+	"041ad375419a202e5ec885db53447291ac0bc3eba1a5743c709359c9db3479b6d792776e6e48dc75a2ad922c73d56d05a8a94168a9307974ed207aa301fcdea282",
 }
 var TestNetGenesisTime = inter.Timestamp(1608600000 * time.Second)
 
 func TestNetGenesisStore() *genesisstore.Store {
-	return TestNetGenesisStoreWithRulesAndStart(utils.ToFtm(1000000000), utils.ToFtm(5000000), opera.TestNetRules(), 2, 1)
+	return TestNetGenesisStoreWithRulesAndStart(opera.TestNetRules(), 2, 1)
 }
 
-func TestNetGenesisStoreWithRulesAndStart(balance, stake *big.Int, rules opera.Rules, epoch idx.Epoch, block idx.Block) *genesisstore.Store {
+func TestNetGenesisStoreWithRulesAndStart(rules opera.Rules, epoch idx.Epoch, block idx.Block) *genesisstore.Store {
 	builder := makegenesis.NewGenesisBuilder(memorydb.NewProducer(""))
 
 	validators := makegenesis.GetValidators(testnetValidators, TestNetGenesisTime)
@@ -48,11 +48,11 @@ func TestNetGenesisStoreWithRulesAndStart(balance, stake *big.Int, rules opera.R
 	// add balances to validators
 	var delegations []drivercall.Delegation
 	for _, val := range validators {
-		builder.AddBalance(val.Address, balance)
+		builder.AddBalance(val.Address, utils.ToFtm(10_000_000))
 		delegations = append(delegations, drivercall.Delegation{
 			Address:            val.Address,
 			ValidatorID:        val.ID,
-			Stake:              stake,
+			Stake:              utils.ToFtm(5_000_000),
 			LockedStake:        new(big.Int),
 			LockupFromEpoch:    0,
 			LockupEndTime:      0,
@@ -107,9 +107,8 @@ func TestNetGenesisStoreWithRulesAndStart(balance, stake *big.Int, rules opera.R
 		Idx: epoch - 1,
 	})
 
-	var owner common.Address = validators[0].Address
-
-	builder.AddBalance(owner, balance)
+	var owner = common.Address{175, 178, 225, 20, 95, 26, 136, 206, 72, 157, 34, 66, 90, 200, 64, 3, 254, 80, 179, 190}
+	builder.AddBalance(owner, utils.ToFtm(1_000_000_000))
 
 	blockProc := makegenesis.DefaultBlockProc()
 	genesisTxs := makefakegenesis.GetGenesisTxs(epoch-2, validators, builder.TotalSupply(), delegations, owner)
