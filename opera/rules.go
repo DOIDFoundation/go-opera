@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	MainNetworkID   uint64 = 0xfa
-	TestNetworkID   uint64 = 0xfa2
-	FakeNetworkID   uint64 = 0xfa3
+	MainNetworkID   uint64 = 0xD01D
+	TestNetworkID   uint64 = 0xDDDD
+	FakeNetworkID   uint64 = 0xDFAD
 	DefaultEventGas uint64 = 28000
 	berlinBit              = 1 << 0
 	londonBit              = 1 << 1
@@ -174,6 +174,11 @@ func TestNetRules() Rules {
 		Blocks: BlocksRules{
 			MaxBlockGas:             20500000,
 			MaxEmptyBlockSkipPeriod: inter.Timestamp(1 * time.Minute),
+		},
+		Upgrades: Upgrades{
+			Berlin: true,
+			London: true,
+			Llr:    true,
 		},
 	}
 }

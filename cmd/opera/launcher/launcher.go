@@ -107,6 +107,7 @@ func initFlags() {
 		utils.TxPoolLifetimeFlag,
 	}
 	operaFlags = []cli.Flag{
+		TestNetFlag,
 		GenesisFlag,
 		ExperimentalGenesisFlag,
 		utils.IdentityFlag,

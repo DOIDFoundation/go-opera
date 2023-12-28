@@ -19,12 +19,10 @@ on how you can run your own `opera` instance.
 
 ### Launching a network
 
-You will need a genesis file to join a network, which may be found in https://github.com/Fantom-foundation/lachesis_launch
-
 Launching `opera` readonly (non-validator) node for network specified by the genesis file:
 
 ```shell
-$ opera --genesis file.g
+$ opera --testnet
 ```
 
 ### Configuration
@@ -72,9 +70,15 @@ trace_filter
 Building `opera` requires a Go (version 1.15 or later) and a C compiler. Once the dependencies are installed, run:
 
 ```shell
-make opera
+$ opera --testnet # launch node
 ```
-The build output is ```build/opera``` executable.
+
+It may be convenient to use a separate datadir for your testnet node to avoid collisions with other networks:
+```shell
+$ opera --testnet --datadir /path/to/datadir # launch node
+$ opera --datadir /path/to/datadir account new # create new account
+$ opera --datadir /path/to/datadir attach # attach to IPC
+```
 
 ### Running `go-opera` node with tracing ability
 
@@ -84,10 +88,33 @@ It's recommended to launch new node from scratch with CLI option `--tracenode` a
 $ opera --genesis /path/to/genesis.g --tracenode
 ```
 
-### Tracing pre-genesis blocks
-If you want to use tracing for pre-genesis blocks, you'll need to import evm history. You can find instructions here: [importing evm history](https://github.com/Fantom-foundation/lachesis_launch/blob/master/docs/import-evm-history.sh)
-
 Then enable JSON-RPC API with option `trace` (`--http.api=eth,web3,net,txpool,ftm,sfc,trace"`)
+
+### Operating a private network (fakenet)
+
+Fakenet is a private network optimized for your private testing.
+It'll generate a genesis containing N validators with equal stakes.
+To launch a validator in this network, all you need to do is specify a validator ID you're willing to launch.
+
+Pay attention that validator's private keys are deterministically generated in this network, so you must use it only for private testing.
+
+Maintaining your own private network is more involved as a lot of configurations taken for
+granted in the official networks need to be manually set up.
+
+To run the fakenet with just one validator (which will work practically as a PoA blockchain), use:
+```shell
+$ opera --fakenet 1/1
+```
+
+To run the fakenet with 5 validators, run the command for each validator:
+```shell
+$ opera --fakenet 1/5 # first node, use 2/5 for second node
+```
+
+If you have to launch a non-validator node in fakenet, use 0 as ID:
+```shell
+$ opera --fakenet 0/5
+```
 
 After that, you have to connect your nodes. Either connect them statically or specify a bootnode:
 ```shell
