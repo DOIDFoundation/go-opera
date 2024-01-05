@@ -207,7 +207,7 @@ func DefaultEconomyRules() EconomyRules {
 	return EconomyRules{
 		BlockMissedSlack: 50,
 		Gas:              DefaultGasRules(),
-		MinGasPrice:      big.NewInt(1e9),
+		MinGasPrice:      new(big.Int),
 		ShortGasPower:    DefaultShortGasPowerRules(),
 		LongGasPower:     DefaulLongGasPowerRules(),
 	}

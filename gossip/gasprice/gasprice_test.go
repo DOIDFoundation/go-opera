@@ -77,45 +77,45 @@ func TestOracle_EffectiveMinGasPrice(t *testing.T) {
 	// all the gas is consumed, price should be high
 	backend.block++
 	backend.totalGasPowerLeft = 0
-	require.Equal(t, "25000000000", gpo.EffectiveMinGasPrice().String())
+	require.Equal(t, "0", gpo.EffectiveMinGasPrice().String())
 
 	// test the cache as well
 	backend.totalGasPowerLeft = 1008000000
-	require.Equal(t, "25000000000", gpo.EffectiveMinGasPrice().String())
+	require.Equal(t, "0", gpo.EffectiveMinGasPrice().String())
 	backend.block++
-	require.Equal(t, "24994672000", gpo.EffectiveMinGasPrice().String())
+	require.Equal(t, "0", gpo.EffectiveMinGasPrice().String())
 	backend.block++
 
 	// all the gas is free, price should be low
 	backend.totalGasPowerLeft = gpo.maxTotalGasPower().Uint64()
 	require.Equal(t, uint64(0x92aeed1c000), backend.totalGasPowerLeft)
-	require.Equal(t, "1000000000", gpo.EffectiveMinGasPrice().String())
+	require.Equal(t, "0", gpo.EffectiveMinGasPrice().String())
 	backend.block++
 
 	// edge case with totalGasPowerLeft exceeding maxTotalGasPower
 	backend.totalGasPowerLeft = 2 * gpo.maxTotalGasPower().Uint64()
-	require.Equal(t, "1000000000", gpo.EffectiveMinGasPrice().String())
+	require.Equal(t, "0", gpo.EffectiveMinGasPrice().String())
 	backend.block++
 
 	// half of the gas is free, price should be 3.75x
 	backend.totalGasPowerLeft = gpo.maxTotalGasPower().Uint64() / 2
-	require.Equal(t, "3750000000", gpo.EffectiveMinGasPrice().String())
+	require.Equal(t, "0", gpo.EffectiveMinGasPrice().String())
 	backend.block++
 
 	// third of the gas is free, price should be higher
 	backend.totalGasPowerLeft = gpo.maxTotalGasPower().Uint64() / 3
-	require.Equal(t, "8125008000", gpo.EffectiveMinGasPrice().String())
+	require.Equal(t, "0", gpo.EffectiveMinGasPrice().String())
 	backend.block++
 
 	// check min and max price hard limits don't apply
 	gpo.cfg.MaxGasPrice = big.NewInt(2000000000)
 	backend.totalGasPowerLeft = gpo.maxTotalGasPower().Uint64() / 3
-	require.Equal(t, "8125008000", gpo.EffectiveMinGasPrice().String())
+	require.Equal(t, "0", gpo.EffectiveMinGasPrice().String())
 	backend.block++
 
 	gpo.cfg.MinGasPrice = big.NewInt(1500000000)
 	backend.totalGasPowerLeft = gpo.maxTotalGasPower().Uint64()
-	require.Equal(t, "1000000000", gpo.EffectiveMinGasPrice().String())
+	require.Equal(t, "0", gpo.EffectiveMinGasPrice().String())
 	backend.block++
 }
 
@@ -193,10 +193,10 @@ func TestOracle_reactiveGasPrice(t *testing.T) {
 	gpo.txpoolStatsTick()
 	require.Equal(t, "0", gpo.reactiveGasPrice(0).String())
 	require.Equal(t, "0", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "200000000", gpo.reactiveGasPrice(0.9*DecimalUnit).String())
-	require.Equal(t, "600000000", gpo.reactiveGasPrice(0.95*DecimalUnit).String())
-	require.Equal(t, "920000000", gpo.reactiveGasPrice(0.99*DecimalUnit).String())
-	require.Equal(t, "1000000000", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.9*DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.95*DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.99*DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(DecimalUnit).String())
 
 	// add one more tx
 	backend.pendingTxs = append(backend.pendingTxs, fakeTx{
@@ -206,14 +206,14 @@ func TestOracle_reactiveGasPrice(t *testing.T) {
 	})
 
 	require.Equal(t, "0", gpo.reactiveGasPrice(0).String())
-	require.Equal(t, "1000000000", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(DecimalUnit).String())
 	gpo.txpoolStatsTick()
 	require.Equal(t, "0", gpo.reactiveGasPrice(0).String())
 	require.Equal(t, "0", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "450000000", gpo.reactiveGasPrice(0.9*DecimalUnit).String())
-	require.Equal(t, "1350000000", gpo.reactiveGasPrice(0.95*DecimalUnit).String())
-	require.Equal(t, "2070000000", gpo.reactiveGasPrice(0.99*DecimalUnit).String())
-	require.Equal(t, "2250000000", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "300000000", gpo.reactiveGasPrice(0.9*DecimalUnit).String())
+	require.Equal(t, "900000000", gpo.reactiveGasPrice(0.95*DecimalUnit).String())
+	require.Equal(t, "1380000000", gpo.reactiveGasPrice(0.99*DecimalUnit).String())
+	require.Equal(t, "1500000000", gpo.reactiveGasPrice(DecimalUnit).String())
 
 	// add two more txs
 	backend.pendingTxs = append(backend.pendingTxs, fakeTx{
@@ -229,53 +229,53 @@ func TestOracle_reactiveGasPrice(t *testing.T) {
 
 	gpo.txpoolStatsTick()
 	require.Equal(t, "0", gpo.reactiveGasPrice(0).String())
-	require.Equal(t, "333333333", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "799999999", gpo.reactiveGasPrice(0.9*DecimalUnit).String())
-	require.Equal(t, "1733333332", gpo.reactiveGasPrice(0.95*DecimalUnit).String())
-	require.Equal(t, "2479999999", gpo.reactiveGasPrice(0.99*DecimalUnit).String())
-	require.Equal(t, "2666666666", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "400000000", gpo.reactiveGasPrice(0.9*DecimalUnit).String())
+	require.Equal(t, "1200000000", gpo.reactiveGasPrice(0.95*DecimalUnit).String())
+	require.Equal(t, "1840000000", gpo.reactiveGasPrice(0.99*DecimalUnit).String())
+	require.Equal(t, "2000000000", gpo.reactiveGasPrice(DecimalUnit).String())
 	// price gets closer to latest state
 	gpo.txpoolStatsTick()
-	require.Equal(t, "500000000", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "2875000000", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "2250000000", gpo.reactiveGasPrice(DecimalUnit).String())
 	gpo.txpoolStatsTick()
-	require.Equal(t, "600000000", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3000000000", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "2400000000", gpo.reactiveGasPrice(DecimalUnit).String())
 	gpo.txpoolStatsTick()
-	require.Equal(t, "666666666", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3083333333", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "2500000000", gpo.reactiveGasPrice(DecimalUnit).String())
 	for i := 0; i < statsBuffer-5; i++ {
 		gpo.txpoolStatsTick()
 	}
-	require.Equal(t, "933333333", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3500000000", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "3000000000", gpo.reactiveGasPrice(DecimalUnit).String())
 	gpo.txpoolStatsTick()
-	require.Equal(t, "1000000000", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3500000000", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "3000000000", gpo.reactiveGasPrice(DecimalUnit).String())
 	gpo.txpoolStatsTick()
-	require.Equal(t, "1000000000", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3500000000", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "0", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "3000000000", gpo.reactiveGasPrice(DecimalUnit).String())
 
 	// change minGasPrice
 	backend.rules.Economy.MinGasPrice = big.NewInt(100)
 	gpo.txpoolStatsTick()
-	require.Equal(t, "933333340", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3466666673", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "6", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "3000000006", gpo.reactiveGasPrice(DecimalUnit).String())
 	gpo.txpoolStatsTick()
-	require.Equal(t, "866666680", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3433333346", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "13", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "3000000013", gpo.reactiveGasPrice(DecimalUnit).String())
 	gpo.txpoolStatsTick()
-	require.Equal(t, "800000020", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3400000020", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "20", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "3000000020", gpo.reactiveGasPrice(DecimalUnit).String())
 	gpo.txpoolStatsTick()
 	// recent gas price plus 5%
-	require.Equal(t, "105", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3150000105", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "26", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "3000000026", gpo.reactiveGasPrice(DecimalUnit).String())
 	for i := 0; i < statsBuffer-5; i++ {
 		gpo.txpoolStatsTick()
 	}
-	require.Equal(t, "105", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
-	require.Equal(t, "3033333426", gpo.reactiveGasPrice(DecimalUnit).String())
+	require.Equal(t, "93", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
+	require.Equal(t, "3000000093", gpo.reactiveGasPrice(DecimalUnit).String())
 	gpo.txpoolStatsTick()
 	require.Equal(t, "100", gpo.reactiveGasPrice(0.8*DecimalUnit).String())
 	require.Equal(t, "3000000100", gpo.reactiveGasPrice(DecimalUnit).String())

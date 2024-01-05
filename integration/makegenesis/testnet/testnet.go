@@ -34,7 +34,7 @@ var testnetValidators = []string{
 	"04ed0273361cec3adbeb45b89f645c9c0fd2e4230fcb285a33d289816d12dbf8b6472587d290dc9598206d6a6a1f7f8f25b7c516f4e563dd3867571dc8a57bb7ff",
 	"041ad375419a202e5ec885db53447291ac0bc3eba1a5743c709359c9db3479b6d792776e6e48dc75a2ad922c73d56d05a8a94168a9307974ed207aa301fcdea282",
 }
-var TestNetGenesisTime = inter.Timestamp(1608600000 * time.Second)
+var TestNetGenesisTime = inter.Timestamp(1703800000 * time.Second)
 
 func TestNetGenesisStore() *genesisstore.Store {
 	return TestNetGenesisStoreWithRulesAndStart(opera.TestNetRules(), 2, 1)
