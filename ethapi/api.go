@@ -1284,9 +1284,9 @@ func RPCMarshalHeader(head *evmcore.EvmHeader, ext extBlockApi) map[string]inter
 		"transactionsRoot": head.TxHash,
 		"receiptsRoot":     ext.receiptsRoot,
 	}
-	if head.BaseFee != nil {
-		result["baseFeePerGas"] = (*hexutil.Big)(head.BaseFee)
-	}
+	// if head.BaseFee != nil {
+	// 	result["baseFeePerGas"] = (*hexutil.Big)(head.BaseFee)
+	// }
 	return result
 }
 
