@@ -35,7 +35,7 @@ var mainnetValidators = []string{
 	"041d9d20245876bec34c1933a56dc035223f5912cf64c81e710b8e4b5ece950f3865c197f5a0b9fa63a9dcbd8ed8f2fbfbfbcb3f69838b4eda1b0e5a5e46881987",
 }
 
-var MainNetGenesisTime = inter.Timestamp(1608600000 * time.Second)
+var MainNetGenesisTime = inter.Timestamp(1705852800 * time.Second)
 
 func MainNetGenesisStore() *genesisstore.Store {
 	return MainNetGenesisStoreWithRulesAndStart(opera.MainNetRules(), 2, 1)
@@ -109,11 +109,12 @@ func MainNetGenesisStoreWithRulesAndStart(rules opera.Rules, epoch idx.Epoch, bl
 	})
 
 	var owner = common.Address{244, 70, 86, 61, 103, 55, 223, 40, 208, 253, 226, 140, 130, 206, 79, 52, 233, 133, 64, 243}
-	builder.AddBalance(owner, utils.ToFtm(1_000_000_000-30_000))
+	builder.AddBalance(owner, utils.ToFtm(1_000_000_000-20_000))
 
 	blockProc := makegenesis.DefaultBlockProc()
 	genesisTxs := makefakegenesis.GetGenesisTxs(epoch-2, validators, builder.TotalSupply(), delegations, owner)
 	err := builder.ExecuteGenesisTxs(blockProc, genesisTxs)
+
 	if err != nil {
 		panic(err)
 	}
