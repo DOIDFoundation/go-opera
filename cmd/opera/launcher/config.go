@@ -29,6 +29,7 @@ import (
 	"github.com/Fantom-foundation/go-opera/gossip/gasprice"
 	"github.com/Fantom-foundation/go-opera/integration"
 	"github.com/Fantom-foundation/go-opera/integration/makefakegenesis"
+	"github.com/Fantom-foundation/go-opera/integration/makegenesis/makemainnet"
 	"github.com/Fantom-foundation/go-opera/integration/makegenesis/testnet"
 	"github.com/Fantom-foundation/go-opera/opera/genesis"
 	"github.com/Fantom-foundation/go-opera/opera/genesisstore"
@@ -78,6 +79,10 @@ var (
 	TestNetFlag = cli.BoolFlag{
 		Name:  "testnet",
 		Usage: "Run testnet.",
+	}
+	MainNetFlag = cli.BoolFlag{
+		Name:  "mainnet",
+		Usage: "Run mainnet.",
 	}
 	// GenesisFlag specifies network genesis configuration
 	GenesisFlag = cli.StringFlag{
@@ -219,6 +224,8 @@ func mayGetGenesisStore(ctx *cli.Context) *genesisstore.Store {
 	switch {
 	case ctx.GlobalIsSet(TestNetFlag.Name):
 		return testnet.TestNetGenesisStore()
+	case ctx.GlobalIsSet(MainNetFlag.Name):
+		return makemainnet.MainNetGenesisStore()
 	case ctx.GlobalIsSet(FakeNetFlag.Name):
 		_, num, err := parseFakeGen(ctx.GlobalString(FakeNetFlag.Name))
 		if err != nil {
@@ -259,6 +266,8 @@ func mayGetGenesisStore(ctx *cli.Context) *genesisstore.Store {
 		notExperimental:
 		}
 		return genesisStore
+	default:
+		return makemainnet.MainNetGenesisStore()
 	}
 	return nil
 }

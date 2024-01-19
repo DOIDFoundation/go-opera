@@ -152,7 +152,7 @@ func (r Rules) EvmChainConfig(hh []UpgradeHeight) *ethparams.ChainConfig {
 
 func MainNetRules() Rules {
 	return Rules{
-		Name:      "main",
+		Name:      "doid",
 		NetworkID: MainNetworkID,
 		Dag:       DefaultDagRules(),
 		Epochs:    DefaultEpochsRules(),
@@ -160,6 +160,11 @@ func MainNetRules() Rules {
 		Blocks: BlocksRules{
 			MaxBlockGas:             20500000,
 			MaxEmptyBlockSkipPeriod: inter.Timestamp(1 * time.Minute),
+		},
+		Upgrades: Upgrades{
+			Berlin: true,
+			London: true,
+			Llr:    true,
 		},
 	}
 }
@@ -202,7 +207,7 @@ func FakeNetRules() Rules {
 	}
 }
 
-// DefaultEconomyRules returns mainnet economy
+// DefaultEconomyRules returns makemainnet economy
 func DefaultEconomyRules() EconomyRules {
 	return EconomyRules{
 		BlockMissedSlack: 50,

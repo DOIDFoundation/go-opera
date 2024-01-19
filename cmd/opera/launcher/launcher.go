@@ -108,6 +108,7 @@ func initFlags() {
 	}
 	operaFlags = []cli.Flag{
 		TestNetFlag,
+		MainNetFlag,
 		GenesisFlag,
 		ExperimentalGenesisFlag,
 		utils.IdentityFlag,
