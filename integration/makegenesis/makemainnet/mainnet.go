@@ -49,7 +49,6 @@ func MainNetGenesisStoreWithRulesAndStart(rules opera.Rules, epoch idx.Epoch, bl
 	// add balances to validators
 	var delegations []drivercall.Delegation
 	for _, val := range validators {
-		builder.AddBalance(val.Address, utils.ToFtm(10_000))
 		delegations = append(delegations, drivercall.Delegation{
 			Address:            val.Address,
 			ValidatorID:        val.ID,
@@ -109,7 +108,7 @@ func MainNetGenesisStoreWithRulesAndStart(rules opera.Rules, epoch idx.Epoch, bl
 	})
 
 	var owner = common.Address{244, 70, 86, 61, 103, 55, 223, 40, 208, 253, 226, 140, 130, 206, 79, 52, 233, 133, 64, 243}
-	builder.AddBalance(owner, utils.ToFtm(1_000_000_000-20_000))
+	builder.AddBalance(owner, utils.ToFtm(1_000_000_000-30_000))
 
 	blockProc := makegenesis.DefaultBlockProc()
 	genesisTxs := makefakegenesis.GetGenesisTxs(epoch-2, validators, builder.TotalSupply(), delegations, owner)
